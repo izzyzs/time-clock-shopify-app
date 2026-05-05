@@ -4,6 +4,9 @@ import {
   AppDistribution,
   shopifyApp,
 } from "@shopify/shopify-app-react-router/server";
+import { PostgreSQLSessionStorage } from "@shopify/shopify-app-session-storage-postgresql";
+
+import prisma from "./db.server";
 
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY,
@@ -12,6 +15,8 @@ const shopify = shopifyApp({
   scopes: process.env.SCOPES?.split(","),
   appUrl: process.env.SHOPIFY_APP_URL || "",
   authPathPrefix: "/auth",
+  // @ts-ignore
+  sessionStorage: new PostgreSQLSessionStorage(process.env.DATABASE_URL!),
   distribution: AppDistribution.AppStore,
   future: {
     expiringOfflineAccessTokens: true,

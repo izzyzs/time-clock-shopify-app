@@ -15,7 +15,7 @@ import {
   Employee,
   timeEntryRowToState,
 } from "app/types";
-import { createClient } from "app/utils/supabase.server";
+import { createSupabaseClient } from "app/utils/supabase.server";
 import { Database } from "app/utils/database.types";
 import ClockInOutTab from "../components/ClockInOutTab";
 // import DashboardTab from "../components/DashboardTab";
@@ -29,7 +29,7 @@ import ReportsTab from "app/components/ReportsTab";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   console.log(`running loader`);
   const { session } = await authenticate.admin(request);
-  const { supabase } = createClient(request);
+  const { supabase } = createSupabaseClient();
   const { data: employees } = await supabase
     .from("employees")
     .select("*")

@@ -1,13 +1,13 @@
 // app/routes/app.preferences.tsx
 import type { ActionFunctionArgs } from "react-router";
-import { createClient } from "../utils/supabase.server"; // whatever your path is
+import { createSupabaseClient } from "../utils/supabase.server"; // whatever your path is
 import { authenticate } from "../shopify.server"; // typical Shopify helper
 import bcrypt from "bcrypt";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { session } = await authenticate.admin(request); // enforce Shopify auth if needed
 
-  const { supabase } = createClient(request);
+  const { supabase } = createSupabaseClient();
 
   // Assume JSON payload from client
   const body = await request.json().catch(() => null);

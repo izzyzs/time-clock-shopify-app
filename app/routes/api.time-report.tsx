@@ -1,5 +1,5 @@
 import { type ActionFunctionArgs } from "react-router";
-import { createClient } from "../utils/supabase.server"; // whatever your path is
+import { createSupabaseClient } from "../utils/supabase.server"; // whatever your path is
 import { authenticate } from "../shopify.server"; // typical Shopify helper
 import { hasRequiredKeys } from "app/lib/helpers";
 import { CreateReportArgs } from "app/types";
@@ -7,7 +7,7 @@ import { CreateReportArgs } from "app/types";
 export const loader = async ({ request }: ActionFunctionArgs) => {
   const { session } = await authenticate.admin(request); // enforce Shopify auth if needed
 
-  const { supabase } = createClient(request);
+  const { supabase } = createSupabaseClient();
 
   const url = new URL(request.url);
   const searchParams = url.searchParams;

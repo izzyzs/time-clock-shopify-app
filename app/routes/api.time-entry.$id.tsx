@@ -1,11 +1,11 @@
-import { createClient } from "app/utils/supabase.server";
+import { createSupabaseClient } from "app/utils/supabase.server";
 import { authenticate } from "app/shopify.server";
 import { ActionFunctionArgs } from "react-router";
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
   await authenticate.admin(request);
 
-  const { supabase } = createClient(request);
+  const { supabase } = createSupabaseClient();
 
   const body = await request.json().catch(() => null);
 

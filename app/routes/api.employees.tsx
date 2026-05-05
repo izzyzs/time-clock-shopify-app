@@ -1,12 +1,12 @@
 import type { ActionFunctionArgs } from "react-router";
-import { createClient } from "../utils/supabase.server"; // whatever your path is
+import { createSupabaseClient } from "../utils/supabase.server"; // whatever your path is
 import { authenticate } from "../shopify.server"; // typical Shopify helper
 import bcrypt from "bcrypt";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { session } = await authenticate.admin(request); // enforce Shopify auth if needed
 
-  const { supabase } = createClient(request);
+  const { supabase } = createSupabaseClient();
 
   const body = await request.json().catch(() => null);
   if (!body) {
@@ -18,18 +18,16 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (request.method === "POST") {
     const { firstName, lastName, code, pin } = body;
     const hash = await bcrypt.hash(pin, 10);
-    const { error } = await supabase
-      .from("employees")
-      .upsert(
-        {
-          code,
-          first_name: firstName,
-          last_name: lastName,
-          pin_hash: hash,
-          shop: session.shop,
-        },
-        { onConflict: "code", ignoreDuplicates: true },
-      );
+    const { error } = await supabase.from("employees").upsert(
+      {
+        code,
+        first_name: firstName,
+        last_name: lastName,
+        pin_hash: hash,
+        shop: session.shop,
+      },
+      { onConflict: "code", ignoreDuplicates: true },
+    );
 
     if (error)
       return new Response(

@@ -1,0 +1,135 @@
+[2m╭─[22m info [2m────────────────────────────────────────────────────────╮[22m
+[2m│[22m                                                               [2m│[22m
+[2m│[22m  [1mUsing shopify.app.time-clock-app.toml for default values:[22m    [2m│[22m
+[2m│[22m                                                               [2m│[22m
+[2m│[22m    • Org:             TBS Today Beauty Supply                 [2m│[22m
+[2m│[22m    • App:             time-clock-app                          [2m│[22m
+[2m│[22m    • Dev store:       tbs-dev-store-1-rpd7wjuf.myshopify.com  [2m│[22m
+[2m│[22m    • Update URLs:     Yes                                     [2m│[22m
+[2m│[22m                                                               [2m│[22m
+[2m│[22m   You can pass [95m`--reset`[39m to your command to reset your app    [2m│[22m
+[2m│[22m  configuration.                                               [2m│[22m
+[2m│[22m                                                               [2m│[22m
+[2m╰───────────────────────────────────────────────────────────────╯[22m
+
+[31m──[39m external error [31m───────────────────────────────────────────────[39m
+
+Error coming from [95m`npm exec react-router dev`[39m
+
+Command failed with exit code 1: npm exec react-router dev
+npm warn Unknown project config "shamefully-hoist". This will
+stop working in the next major version of npm. See `npm help
+npmrc` for supported config options.
+✘ [ERROR] No matching export in
+"node_modules/react-router/dist/development/index.mjs" for import
+ "UNSAFE_logV6DeprecationWarnings"
+
+    node_modules/react-router-dom/dist/index.js:13:36:
+      13 │ ...outeProperties, UNSAFE_logV6DeprecationWarnings,
+UNSAFE_DataRou...
+         ╵                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+✘ [ERROR] No matching export in
+"node_modules/react-router/dist/development/index.mjs" for import
+ "UNSAFE_useRoutesImpl"
+
+    node_modules/react-router-dom/dist/index.js:13:134:
+      13 │ ...StateContext, Router, UNSAFE_useRoutesImpl,
+UNSAFE_NavigationCo...
+         ╵                          ~~~~~~~~~~~~~~~~~~~~
+
+✘ [ERROR] No matching export in
+"node_modules/react-router/dist/development/index.mjs" for import
+ "UNSAFE_useRouteId"
+
+    node_modules/react-router-dom/dist/index.js:13:246:
+      13 │ ...eNavigate, createPath, UNSAFE_useRouteId,
+UNSAFE_RouteContext, ...
+         ╵                           ~~~~~~~~~~~~~~~~~
+
+✘ [ERROR] No matching export in
+"node_modules/react-router/dist/development/index.mjs" for import
+ "AbortedDeferredError"
+
+    node_modules/react-router-dom/dist/index.js:14:9:
+      14 │ export { AbortedDeferredError, Await, MemoryRouter,
+Navigate, Navi...
+         ╵          ~~~~~~~~~~~~~~~~~~~~
+
+✘ [ERROR] No matching export in
+"node_modules/react-router/dist/development/index.mjs" for import
+ "UNSAFE_useRouteId"
+
+    node_modules/react-router-dom/dist/index.js:14:237:
+      14 │ ..., UNSAFE_RouteContext, UNSAFE_useRouteId,
+createMemoryRouter, c...
+         ╵                           ~~~~~~~~~~~~~~~~~
+
+✘ [ERROR] No matching export in
+"node_modules/react-router/dist/development/index.mjs" for import
+ "defer"
+
+    node_modules/react-router-dom/dist/index.js:14:340:
+      14 │ ...n, createRoutesFromElements, defer, generatePath,
+isRouteErrorR...
+         ╵                                 ~~~~~
+
+✘ [ERROR] No matching export in
+"node_modules/react-router/dist/development/index.mjs" for import
+ "json"
+
+    node_modules/react-router-dom/dist/index.js:14:383:
+      14 │ ...tePath, isRouteErrorResponse, json, matchPath,
+matchRoutes, par...
+         ╵                                  ~~~~
+
+/Users/ismaelz/Dropbox/Ben_n_Family/Ismael_Z/Documents/Career/Pro
+gramming/Business/tbs-ecommerce/shopify/time-clock-app/node_modul
+es/esbuild/lib/main.js:1467
+  let error = new Error(text);
+              ^
+
+Error: Build failed with 7 errors:
+node_modules/react-router-dom/dist/index.js:13:36: ERROR: No
+matching export in
+"node_modules/react-router/dist/development/index.mjs" for import
+ "UNSAFE_logV6DeprecationWarnings"
+node_modules/react-router-dom/dist/index.js:13:134: ERROR: No
+matching export in
+"node_modules/react-router/dist/development/index.mjs" for import
+ "UNSAFE_useRoutesImpl"
+node_modules/react-router-dom/dist/index.js:13:246: ERROR: No
+matching export in
+"node_modules/react-router/dist/development/index.mjs" for import
+ "UNSAFE_useRouteId"
+node_modules/react-router-dom/dist/index.js:14:9: ERROR: No
+matching export in
+"node_modules/react-router/dist/development/index.mjs" for import
+ "AbortedDeferredError"
+node_modules/react-router-dom/dist/index.js:14:237: ERROR: No
+matching export in
+"node_modules/react-router/dist/development/index.mjs" for import
+ "UNSAFE_useRouteId"
+...
+    at failureErrorWithLog [90m(/Users/ismaelz/Dropbox/Ben_n_Family/I[39m
+[90msmael_Z/Documents/Career/Programming/Business/tbs-ecommerce/shopi[39m
+[90mfy/time-clock-app/[39mnode_modules/[4mesbuild[24m/lib/main.js:1467:15[90m)[39m
+    at [90m/Users/ismaelz/Dropbox/Ben_n_Family/Ismael_Z/Documents/Car[39m
+[90meer/Programming/Business/tbs-ecommerce/shopify/time-clock-app/[39mnod
+e_modules/[4mesbuild[24m/lib/main.js:926:25
+    at [90m/Users/ismaelz/Dropbox/Ben_n_Family/Ismael_Z/Documents/Car[39m
+[90meer/Programming/Business/tbs-ecommerce/shopify/time-clock-app/[39mnod
+e_modules/[4mesbuild[24m/lib/main.js:1345:9
+[90m    at processTicksAndRejections [39m
+[90m(node:internal/process/task_queues:95:5)[39m {
+  errors: [36m[Getter/Setter][39m,
+  warnings: [36m[Getter/Setter][39m
+}
+
+Node.js v20.19.3
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m49761[22m/[39m
+[2m  [32m➜[39m  [1mNetwork[22m: use [22m[1m--host[22m[2m to expose[22m
+
+[31m─────────────────────────────────────────────────────────────────[39m
+
+[?25h

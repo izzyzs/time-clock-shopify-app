@@ -1,10 +1,20 @@
-import { type ActionFunctionArgs } from "react-router";
+import { type LoaderFunctionArgs } from "react-router";
 import { createSupabaseClient } from "../utils/supabase.server"; // whatever your path is
 import { authenticate } from "../shopify.server"; // typical Shopify helper
 import { hasRequiredKeys } from "app/lib/helpers";
 import { CreateReportArgs } from "app/types";
+import { getCorsHeaders, handleCorsPreflight } from "app/utils/cors.server";
 
-export const loader = async ({ request }: ActionFunctionArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const preflight = handleCorsPreflight(request);
+  if (preflight) return preflight;
+
+  if (request.method !== "GET")
+    return new Response("Method Not Allowed", {
+      status: 405,
+      headers: { ...getCorsHeaders(request), Allow: "GET" },
+    });
+
   const { session } = await authenticate.admin(request); // enforce Shopify auth if needed
 
   const { supabase } = createSupabaseClient();
@@ -35,6 +45,7 @@ export const loader = async ({ request }: ActionFunctionArgs) => {
   const employeeID = idParam ? +idParam : undefined;
 
   const args: CreateReportArgs = {
+    p_shop: session.shop,
     p_start_date: startDate,
     p_end_date: endDate,
     p_employee_id: employeeID,

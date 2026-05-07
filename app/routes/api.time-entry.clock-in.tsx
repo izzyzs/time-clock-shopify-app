@@ -1,8 +1,19 @@
 // app/routes/app.preferences.tsx
-import type { ActionFunctionArgs } from "react-router";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { createSupabaseClient } from "../utils/supabase.server"; // whatever your path is
 import { authenticate } from "../shopify.server"; // typical Shopify helper
 import bcrypt from "bcrypt";
+import { getCorsHeaders, handleCorsPreflight } from "app/utils/cors.server";
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const preflight = handleCorsPreflight(request);
+  if (preflight) return preflight;
+
+  return new Response("Method Not Allowed", {
+    status: 405,
+    headers: { ...getCorsHeaders(request), Allow: "POST" },
+  });
+}
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { session } = await authenticate.admin(request); // enforce Shopify auth if needed
@@ -15,7 +26,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (!body) {
     return new Response(JSON.stringify({ error: "Invalid payload" }), {
       status: 400,
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        ...getCorsHeaders(request),
+        "Content-Type": "application/json",
+      },
     });
   }
 
@@ -25,12 +39,16 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     .from("employees")
     .select("*")
     .eq("id", employeeId)
+    .eq("shop", session.shop)
     .single();
 
   if (!employeeData)
     return new Response(JSON.stringify({ error: "Employee doesn't exist" }), {
       status: 400,
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        ...getCorsHeaders(request),
+        "Content-Type": "application/json",
+      },
     });
 
   if (employeeError)
@@ -40,16 +58,24 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       }),
       {
         status: 500,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          ...getCorsHeaders(request),
+          "Content-Type": "application/json",
+        },
       },
     );
+
+  console.log("pin", pin);
 
   const isValidPin = await bcrypt.compare(pin, employeeData.pin_hash);
 
   if (!isValidPin)
     return new Response(JSON.stringify({ error: "Invalid pin" }), {
       status: 400,
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        ...getCorsHeaders(request),
+        "Content-Type": "application/json",
+      },
     });
 
   const { error: insertError } = await supabase.from("time_entries").insert({
@@ -65,13 +91,19 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       }),
       {
         status: 500,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          ...getCorsHeaders(request),
+          "Content-Type": "application/json",
+        },
       },
     );
   }
 
   return new Response(JSON.stringify({ success: true }), {
     status: 200,
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      ...getCorsHeaders(request),
+      "Content-Type": "application/json",
+    },
   });
 };

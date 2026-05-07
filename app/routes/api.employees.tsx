@@ -1,7 +1,54 @@
-import type { ActionFunctionArgs } from "react-router";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { createSupabaseClient } from "../utils/supabase.server"; // whatever your path is
 import { authenticate } from "../shopify.server"; // typical Shopify helper
 import bcrypt from "bcrypt";
+import { getCorsHeaders, handleCorsPreflight } from "app/utils/cors.server";
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const preflight = handleCorsPreflight(request);
+  if (preflight) return preflight;
+
+  if (request.method !== "GET") {
+    return new Response("Method Not Allowed", {
+      status: 405,
+      headers: {
+        ...getCorsHeaders(request),
+        Allow: "GET, POST, DELETE, OPTIONS",
+      },
+    });
+  }
+
+  const { session } = await authenticate.admin(request);
+
+  const { supabase } = createSupabaseClient();
+
+  const { data, error: retrievalError } = await supabase.rpc(
+    "get_current_clock_status",
+    { p_shop: session.shop },
+  );
+
+  if (retrievalError)
+    return new Response(
+      JSON.stringify({
+        error: `Failed to retrieve employees: ${JSON.stringify(retrievalError, null, 2)}`,
+      }),
+      { status: 500, headers: { "Content-Type": "application/json" } },
+    );
+
+  if (!data)
+    return new Response(JSON.stringify({ message: "No employees exist" }), {
+      status: 203,
+      headers: {
+        ...getCorsHeaders(request),
+        "Content-Type": "application/json",
+      },
+    });
+
+  return new Response(JSON.stringify({ employees: data }), {
+    status: 200,
+    headers: { ...getCorsHeaders(request), "Content-Type": "application/json" },
+  });
+};
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { session } = await authenticate.admin(request); // enforce Shopify auth if needed
@@ -12,7 +59,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (!body) {
     return new Response(JSON.stringify({ error: "Invalid payload" }), {
       status: 400,
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        ...getCorsHeaders(request),
+        "Content-Type": "application/json",
+      },
     });
   }
   if (request.method === "POST") {
@@ -37,13 +87,19 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         }),
         {
           status: 500,
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            ...getCorsHeaders(request),
+            "Content-Type": "application/json",
+          },
         },
       );
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        ...getCorsHeaders(request),
+        "Content-Type": "application/json",
+      },
     });
   } else if (request.method === "DELETE") {
     console.log("method === DELETE");
@@ -63,11 +119,20 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         JSON.stringify({
           error: `Employee delete failed: ${JSON.stringify(error, null, 2)}`,
         }),
-        { status: 500, headers: { "Content-Type": "application/json" } },
+        {
+          status: 500,
+          headers: {
+            ...getCorsHeaders(request),
+            "Content-Type": "application/json",
+          },
+        },
       );
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        ...getCorsHeaders(request),
+        "Content-Type": "application/json",
+      },
     });
   }
 };

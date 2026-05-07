@@ -1,5 +1,3 @@
-// import "@shopify/ui-extensions/preact";
-// import { useState, useEffect } from "preact/hooks";
 import { Employee, TimeEntry } from "../types";
 import { useState } from "react";
 // import { CREATE_TIME_ENTRY, UPDATE_TIME_ENTRY } from "../lib/graphql";
@@ -69,7 +67,7 @@ export default function ClockInOutTab({
       if (!openEntry) {
         // Clock In
         const now = new Date().toISOString();
-        const res = await fetch("/api/clock-in", {
+        const res = await fetch("/api/time-entry/clock-in", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ selectedEmployeeId, pin, now }),
@@ -81,36 +79,18 @@ export default function ClockInOutTab({
         setSuccessMsg(
           `${selectedEmployee.firstName} ${selectedEmployee.lastName} clocked in successfully at ${formatTime(now)}.`,
         );
-
-        // success: maybe show a banner or toast here
-        /*const { data, errors } = await shopify.query(CREATE_TIME_ENTRY, {
-                  variables: {
-                    metaobject: {
-                      type: "sidekick_time_entry",
-                      fields: [
-                        { key: "employee_id", value: selectedEmployee.id },
-                        { key: "employee_name", value: selectedEmployee.name },
-                        { key: "clock_in", value: now },
-                      ],
-                    },
-                  },
-                });
-                if (errors?.length)
-                  throw new Error(errors.map((e: any) => e.message).join(", "));
-                if (data?.metaobjectCreate?.userErrors?.length) {
-                  throw new Error(
-                    data.metaobjectCreate.userErrors
-                      .map((e: any) => e.message)
-                      .join(", "),
-                  );
-                }*/
       } else {
         // Clock Out
         const now = new Date().toISOString();
-        const res = await fetch("/api/clock-out", {
+        const res = await fetch("/api/time-entry/clock-out", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ entryId: openEntry.id, now }),
+          body: JSON.stringify({
+            entryId: openEntry.id,
+            selectedEmployeeId,
+            pin,
+            now,
+          }),
         });
         if (!res.ok) {
           const data = await res.json().catch(() => ({}));

@@ -151,23 +151,6 @@ export type Database = {
           shifts: number
         }[]
       }
-      get_active_time_entry_id: {
-        Args: { p_employee_id: number; p_shop: string }
-        Returns: number
-      }
-      get_current_clock_status: {
-        Args: { p_shop: string }
-        Returns: {
-          active: boolean
-          code: string
-          first_name: string
-          id: number
-          is_clocked_in: boolean
-          last_name: string
-          pin_hash: string
-          shop: string
-        }[]
-      }
     }
     Enums: {
       [_ in never]: never

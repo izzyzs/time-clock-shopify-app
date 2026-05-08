@@ -2,7 +2,7 @@
 
 client_id = "126c760d16fb87898103bacad9279fd6"
 name = "time-clock-app"
-application_url = "https://pos-smart-grid-production.up.railway.app/"
+application_url = "<SHOPIFY_APP_URL>"
 embedded = true
 
 [build]
@@ -24,8 +24,8 @@ include_config_on_deploy = true
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
 scopes = "write_products,write_metaobjects,write_metaobject_definitions"
 
-# [auth]
-# redirect_urls = [ "https://example.com/api/auth" ]
+[auth]
+redirect_urls = [ "<SHOPIFY_APP_URL>/api/auth" ]
 
 # [product.metafields.app.demo_info]
 # type = "single_line_text_field"

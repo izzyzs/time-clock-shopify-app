@@ -6,7 +6,7 @@ type = "ui_extension"
 name = "t:name"
 uid = "149c1d23-b280-f51c-42ee-3a558fd9cf8a2b8ba0cd"
 handle = "time-clock-app"
-description = "POS UI extension for Time Clock App"
+description = "Clock In/Out"
 
 # module: file that contains your extension’s source code
 # target: location where your extension appears in POS

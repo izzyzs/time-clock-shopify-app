@@ -62,7 +62,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     return new Response(
       JSON.stringify({ message: `Entry ${id} doesn't exist` }),
       {
-        status: 203,
+        status: 204,
         headers: {
           ...getCorsHeaders(request),
           "Content-Type": "application/json",

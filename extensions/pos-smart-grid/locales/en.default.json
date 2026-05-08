@@ -1,7 +1,7 @@
 {
   "name": "time-clock",
   "tile_heading": "Time Clock",
-  "tile_subheading": "{{flavor}} Extension",
-  "modal_heading": "POS modal",
+  "tile_subheading": "Clock In/Clock Out",
+  "modal_heading": "Clock In/Out",
   "welcome": "Welcome to the {{flavor}} extension"
 }

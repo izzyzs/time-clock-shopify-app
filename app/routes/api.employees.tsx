@@ -67,6 +67,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
   if (request.method === "POST") {
     console.log("request", request);
+    console.log("body", body);
     const { firstName, lastName, code, pin } = body;
     const hash = await bcrypt.hash(pin, 10);
     const { error } = await supabase.from("employees").upsert(

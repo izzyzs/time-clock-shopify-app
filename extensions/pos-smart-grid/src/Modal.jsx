@@ -2,7 +2,7 @@
 import "@shopify/ui-extensions/preact";
 import { render } from "preact";
 import { useEffect, useState } from "preact/hooks";
-const API_BASE_URL = "https://recovered-apply-male-jerry.trycloudflare.com";
+const API_BASE_URL = "pos-smart-grid-production.up.railway.app";
 
 export default async () => {
   render(<Extension />, document.body);

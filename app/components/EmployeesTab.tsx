@@ -284,7 +284,7 @@ export default function EmployeesTab({
             <s-text type="strong">
               {deleteEmployee?.firstName} {deleteEmployee?.lastName}
             </s-text>
-            ? Their time entries will remain in the log.
+            ? Their time entries will be deleted as well.
           </s-text>
           <s-text tone="caution">This action cannot be undone.</s-text>
         </s-stack>

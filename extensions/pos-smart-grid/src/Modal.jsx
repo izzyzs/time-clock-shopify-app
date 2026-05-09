@@ -241,6 +241,15 @@ function Extension() {
                   setPin(event.currentTarget.value);
                 }}
               ></s-text-field>
+              <input
+                type={`password`}
+                placeholder={`Enter your pin`}
+                value={pin}
+                onChange={(e) => {
+                  console.log(e.target.value);
+                  setPin(e.target.value);
+                }}
+              ></input>
               {!selectedEmployee.is_clocked_in ? (
                 <s-button variant="primary" onClick={clockIn}>
                   Clock in

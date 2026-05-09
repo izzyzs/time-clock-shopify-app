@@ -44,6 +44,10 @@ function Extension() {
     return time;
   }
 
+  useEffect(() => {
+    console.log("selectedEmployee", selectedEmployee);
+  }, [selectedEmployee]);
+
   const resetValues = () => {
     setErrorMsg("");
     setSuccessMsg("");

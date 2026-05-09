@@ -70,18 +70,20 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     console.log("body", body);
     const { firstName, lastName, code, pin } = body;
     const hash = await bcrypt.hash(pin, 10);
-    const { error } = await supabase.from("employees").upsert(
-      {
-        code,
-        first_name: firstName,
-        last_name: lastName,
-        pin_hash: hash,
-        shop: session.shop,
-      },
-      { onConflict: "code", ignoreDuplicates: true },
-    );
+    const data = {
+      code,
+      first_name: firstName,
+      last_name: lastName,
+      pin_hash: hash,
+      shop: session.shop,
+    };
+    console.log("data to be upserted:", data);
+    const { data: createdEmployee, error } = await supabase
+      .from("employees")
+      .upsert(data, { onConflict: "code, shop", ignoreDuplicates: true })
+      .select();
 
-    if (error)
+    if (error || !createdEmployee)
       return new Response(
         JSON.stringify({
           error: `failed to create employee; ${JSON.stringify(error, null, 2)}`,

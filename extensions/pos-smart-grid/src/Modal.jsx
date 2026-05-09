@@ -45,8 +45,9 @@ function Extension() {
   }
 
   useEffect(() => {
+    console.log("employees,", employees);
     console.log("selectedEmployee", selectedEmployee);
-  }, [selectedEmployee]);
+  }, [selectedEmployee, employees]);
 
   const resetValues = () => {
     setErrorMsg("");

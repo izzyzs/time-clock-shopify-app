@@ -282,22 +282,22 @@ function Extension() {
 const PinPad = () => {
   return (
     <s-box>
-      <s-stack>
+      <s-stack direction="inline" gap="small">
         <s-button>1</s-button>
         <s-button>2</s-button>
         <s-button>3</s-button>
       </s-stack>
-      <s-stack>
+      <s-stack direction="inline" gap="small">
         <s-button>4</s-button>
         <s-button>5</s-button>
         <s-button>6</s-button>
       </s-stack>
-      <s-stack>
+      <s-stack direction="inline" gap="small">
         <s-button>7</s-button>
         <s-button>8</s-button>
         <s-button>9</s-button>
       </s-stack>
-      <s-stack>
+      <s-stack direction="inline" gap="small">
         <s-button>Clear</s-button>
         <s-button>0</s-button>
         <s-button>Submit</s-button>

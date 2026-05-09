@@ -239,6 +239,7 @@ function Extension() {
           </s-box>
           {selectedEmployee && (
             <>
+              <s-text>{selectedEmployee.first_name}</s-text>
               <s-stack direction="inline" gap="small" justifyContent="center">
                 <s-text-field
                   label="Pin number (required)"

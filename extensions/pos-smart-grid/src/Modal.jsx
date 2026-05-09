@@ -2,7 +2,7 @@
 import "@shopify/ui-extensions/preact";
 import { render } from "preact";
 import { useEffect, useState } from "preact/hooks";
-const API_BASE_URL = "pos-smart-grid-production.up.railway.app";
+const API_BASE_URL = "https://pos-smart-grid-production.up.railway.app";
 
 export default async () => {
   render(<Extension />, document.body);

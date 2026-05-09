@@ -233,14 +233,14 @@ function Extension() {
           </s-box>
           {selectedEmployee && (
             <>
-              <s-text-field
+              {/* <s-text-field
                 label="Pin number (required)"
                 value={pin}
                 onInput={(event) => {
                   console.log(event.currentTarget.value);
                   setPin(event.currentTarget.value);
                 }}
-              ></s-text-field>
+              ></s-text-field> */}
               <input
                 type={`password`}
                 placeholder={`Enter your pin`}

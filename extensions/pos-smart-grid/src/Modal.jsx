@@ -233,14 +233,15 @@ function Extension() {
           </s-box>
           {selectedEmployee && (
             <>
-              {/* <s-text-field
+              <s-text-field
                 label="Pin number (required)"
+                disabled={true}
                 value={pin}
-                onInput={(event) => {
-                  console.log(event.currentTarget.value);
-                  setPin(event.currentTarget.value);
-                }}
-              ></s-text-field> */}
+                // onInput={(event) => {
+                //   console.log(event.currentTarget.value);
+                //   setPin(event.currentTarget.value);
+                // }}
+              ></s-text-field>
               {/* <input
                 type={`password`}
                 placeholder={`Enter your pin`}
@@ -250,7 +251,7 @@ function Extension() {
                   setPin(e.target.value);
                 }}
               ></input> */}
-              <PinPad />
+              <PinPad pin={pin} setPin={setPin} />
               {!selectedEmployee.is_clocked_in ? (
                 <s-button variant="primary" onClick={clockIn}>
                   Clock in
@@ -279,28 +280,93 @@ function Extension() {
   );
 }
 
-const PinPad = () => {
+const PinPad = ({ pin, setPin }) => {
   return (
     <s-box>
-      <s-stack direction="inline" gap="small">
-        <s-button>1</s-button>
-        <s-button>2</s-button>
-        <s-button>3</s-button>
+      <s-stack direction="inline" gap="small" justifyContent="center">
+        <s-button
+          onClick={setPin(() => {
+            return pin + "1";
+          })}
+        >
+          1
+        </s-button>
+        <s-button
+          onClick={setPin(() => {
+            return pin + "2";
+          })}
+        >
+          2
+        </s-button>
+        <s-button
+          onClick={setPin(() => {
+            return pin + "3";
+          })}
+        >
+          3
+        </s-button>
       </s-stack>
-      <s-stack direction="inline" gap="small">
-        <s-button>4</s-button>
-        <s-button>5</s-button>
-        <s-button>6</s-button>
+      <s-stack direction="inline" gap="small" justifyContent="center">
+        <s-button
+          onClick={setPin(() => {
+            return pin + "4";
+          })}
+        >
+          4
+        </s-button>
+        <s-button
+          onClick={setPin(() => {
+            return pin + "5";
+          })}
+        >
+          5
+        </s-button>
+        <s-button
+          onClick={setPin(() => {
+            return pin + "6";
+          })}
+        >
+          6
+        </s-button>
       </s-stack>
-      <s-stack direction="inline" gap="small">
-        <s-button>7</s-button>
-        <s-button>8</s-button>
-        <s-button>9</s-button>
+      <s-stack direction="inline" gap="small" justifyContent="center">
+        <s-button
+          onClick={setPin(() => {
+            return pin + "7";
+          })}
+        >
+          7
+        </s-button>
+        <s-button
+          onClick={setPin(() => {
+            return pin + "8";
+          })}
+        >
+          8
+        </s-button>
+        <s-button
+          onClick={setPin(() => {
+            return pin + "9";
+          })}
+        >
+          9
+        </s-button>
       </s-stack>
-      <s-stack direction="inline" gap="small">
-        <s-button>Clear</s-button>
-        <s-button>0</s-button>
-        <s-button>Submit</s-button>
+      <s-stack direction="inline" gap="small" justifyContent="center">
+        <s-button
+          onClick={setPin(() => {
+            return pin.slice(0, -1);
+          })}
+        >
+          &larr;
+        </s-button>
+        <s-button
+          onClick={setPin(() => {
+            return pin + "0";
+          })}
+        >
+          0
+        </s-button>
       </s-stack>
     </s-box>
   );

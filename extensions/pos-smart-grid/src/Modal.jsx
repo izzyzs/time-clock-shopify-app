@@ -241,7 +241,7 @@ function Extension() {
                   setPin(event.currentTarget.value);
                 }}
               ></s-text-field> */}
-              <input
+              {/* <input
                 type={`password`}
                 placeholder={`Enter your pin`}
                 value={pin}
@@ -249,7 +249,8 @@ function Extension() {
                   console.log(e.target.value);
                   setPin(e.target.value);
                 }}
-              ></input>
+              ></input> */}
+              <PinPad />
               {!selectedEmployee.is_clocked_in ? (
                 <s-button variant="primary" onClick={clockIn}>
                   Clock in
@@ -277,3 +278,30 @@ function Extension() {
     </s-page>
   );
 }
+
+const PinPad = () => {
+  return (
+    <s-box>
+      <s-stack>
+        <s-button>1</s-button>
+        <s-button>2</s-button>
+        <s-button>3</s-button>
+      </s-stack>
+      <s-stack>
+        <s-button>4</s-button>
+        <s-button>5</s-button>
+        <s-button>6</s-button>
+      </s-stack>
+      <s-stack>
+        <s-button>7</s-button>
+        <s-button>8</s-button>
+        <s-button>9</s-button>
+      </s-stack>
+      <s-stack>
+        <s-button>Clear</s-button>
+        <s-button>0</s-button>
+        <s-button>Submit</s-button>
+      </s-stack>
+    </s-box>
+  );
+};

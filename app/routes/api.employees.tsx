@@ -80,7 +80,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     console.log("data to be upserted:", data);
     const { data: createdEmployee, error } = await supabase
       .from("employees")
-      .upsert(data, { onConflict: "code, shop", ignoreDuplicates: true })
+      .upsert(data, { onConflict: "code,shop", ignoreDuplicates: true })
       .select();
 
     if (error || !createdEmployee)

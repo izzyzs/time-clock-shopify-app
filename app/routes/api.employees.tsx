@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import { getCorsHeaders, handleCorsPreflight } from "app/utils/cors.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
+  console.log("request.method", request.method);
   const preflight = handleCorsPreflight(request);
   if (preflight) return preflight;
 

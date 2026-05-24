@@ -35,6 +35,38 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   const { selectedEmployeeId: employeeId, pin, now } = body;
 
+  const { data: locationData, error: locationError } = await supabase
+    .from("locations")
+    .select("location")
+    .eq("shop", session.shop)
+    .single();
+
+  if (!locationData)
+    return new Response(
+      JSON.stringify({ error: "location for shop needs to be set" }),
+      {
+        status: 400,
+        headers: {
+          ...getCorsHeaders(request),
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+  if (locationError)
+    return new Response(
+      JSON.stringify({
+        error: `Failed to retrieve employee: ${JSON.stringify(locationError)}`,
+      }),
+      {
+        status: 500,
+        headers: {
+          ...getCorsHeaders(request),
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
   const { data: employeeData, error: employeeError } = await supabase
     .from("employees")
     .select("*")
@@ -82,6 +114,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     employee_id: employeeData.id,
     clock_in: now,
     shop: session.shop,
+    location: locationData.location,
   });
 
   if (insertError) {

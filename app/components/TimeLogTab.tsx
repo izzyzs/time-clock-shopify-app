@@ -1,14 +1,27 @@
 import { useState, useRef } from "react";
-import { Employee, TimeEntry } from "../types";
+import {
+  CreateTimeLogReportReturns,
+  Employee,
+  returnRowToTimeEntry,
+  TimeEntry,
+} from "../types";
 import {
   combineDateTimeToISO,
   formatDate,
   formatTime,
   formatDuration,
+  formatDay,
+  formatDurationInHours,
 } from "../lib/helpers";
 import { CallbackEvent } from "@shopify/polaris-types";
+
+import pdfMake from "pdfmake/build/pdfmake";
+import "pdfmake/build/vfs_fonts";
+import { TDocumentDefinitions } from "pdfmake/interfaces";
 // import { UPDATE_TIME_ENTRY, DELETE_METAOBJECT } from "../lib/graphql";
 // ─── Time Log Tab ─────────────────────────────────────────────────────────────
+
+type TimeLogsTabPageState = { changed: boolean; generated: boolean };
 
 type Time = { hours: number; minutes: number; period: "AM" | "PM" };
 const DEFAULT_TIME: Time = { hours: 12, minutes: 0, period: "AM" };
@@ -43,7 +56,7 @@ function timeToString(time: Time): string {
 
 export default function TimeLogTab({
   employees,
-  timeEntries,
+  timeEntries: originalTimeEntries,
   loading,
   onRefresh,
 }: {
@@ -56,6 +69,44 @@ export default function TimeLogTab({
   const [page, setPage] = useState<number>(0);
   const [actionError, setActionError] = useState<string>("");
   const [successMsg, setSuccessMsg] = useState<string>("");
+
+  const [filterEmployee, setFilterEmployee] = useState<string>("all");
+  const [filterStartDate, setFilterStartDate] = useState<string>("");
+  const [filterEndDate, setFilterEndDate] = useState<string>("");
+  const [filterError, setFilterError] = useState<string>("");
+  const [timeEntries, setTimeEntries] =
+    useState<TimeEntry[]>(originalTimeEntries);
+  const [pageState, setPageState] = useState<TimeLogsTabPageState>({
+    changed: true,
+    generated: false,
+  });
+
+  async function getLogs() {
+    setFilterError("");
+    if (filterStartDate && filterEndDate && filterEndDate < filterStartDate) {
+      setFilterError("End date must be on or after start date.");
+      return;
+    }
+
+    const url =
+      filterEmployee !== "all"
+        ? `/api/time-entry?start_date=${filterStartDate}&end_date=${filterEndDate}&employee_id=${filterEmployee}`
+        : `/api/time-entry?start_date=${filterStartDate}&end_date=${filterEndDate}`;
+    console.log("url", url);
+    const res = await fetch(url, { method: "GET" });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      throw new Error(data.error || "Failed to clock out");
+    }
+
+    const retrievedTimeEntries = data.map((i: CreateTimeLogReportReturns) =>
+      returnRowToTimeEntry(i),
+    );
+
+    setTimeEntries(retrievedTimeEntries);
+  }
 
   // Edit modal state
   const [editEntry, setEditEntry] = useState<TimeEntry | null>(null);
@@ -182,6 +233,103 @@ export default function TimeLogTab({
     }
   }
 
+  function buildPDF() {
+    if (!timeEntries) return;
+    const docDefinition: TDocumentDefinitions = {
+      content: [
+        {
+          columns: [
+            {
+              text: `Start Date: ${filterStartDate ? filterStartDate : "N/A"} to End Date: ${filterEndDate ? filterEndDate : "N/A"}`,
+              width: "*",
+            },
+            {
+              text: `Employee: ${filterEmployee === "all" ? filterEmployee : `${employees.find((e) => e.id === filterEmployee)?.firstName} ${employees.find((e) => e.id === filterEmployee)?.lastName}`}`,
+            },
+          ],
+        },
+        {
+          table: {
+            headerRows: 1,
+            widths: ["*", "*", "*", "*", "*", "*", "*", "*"],
+            body: [
+              [
+                {
+                  text: "First Name",
+                  style: "tableHeader",
+                  alignment: "center",
+                },
+                {
+                  text: "Last Name",
+                  style: "tableHeader",
+                  alignment: "center",
+                },
+                {
+                  text: "Location",
+                  style: "tableHeader",
+                  alignment: "center",
+                },
+                {
+                  text: "Day",
+                  style: "tableHeader",
+                  alignment: "center",
+                },
+                {
+                  text: "Clock In",
+                  style: "tableHeader",
+                  alignment: "center",
+                },
+
+                {
+                  text: "Day",
+                  style: "tableHeader",
+                  alignment: "center",
+                },
+                {
+                  text: "Clock Out",
+                  style: "tableHeader",
+                  alignment: "center",
+                },
+                {
+                  text: "Hours",
+                  style: "tableHeader",
+                  alignment: "center",
+                },
+              ],
+              ...timeEntries.map((te) => [
+                te.firstName,
+                te.lastName,
+                te.location,
+                `${formatDay(te.clockIn)}`,
+                `${formatDate(te.clockIn)} ${formatTime(te.clockIn)}`,
+                `${formatDay(te.clockOut)}`,
+                `${formatDate(te.clockOut)} ${formatTime(te.clockOut)}`,
+                `${formatDurationInHours(te.clockIn, te.clockOut)}`,
+              ]),
+            ],
+          },
+          style: { marginBottom: 5 },
+        },
+      ],
+      defaultStyle: {
+        fontSize: 9,
+      },
+      styles: {
+        tableHeader: {
+          bold: true,
+          fontSize: 11,
+          color: "black",
+        },
+      },
+    };
+
+    console.log("docDefinition", docDefinition);
+    // pdfMake.createPdf(docDefinition).download(`timesheet-${today}.pdf`);
+    pdfMake.createPdf(docDefinition).print();
+  }
+
+  const today = new Date().toISOString().slice(0, 10);
+
   return (
     <s-section heading="Time Log">
       {successMsg && (
@@ -194,6 +342,62 @@ export default function TimeLogTab({
           <s-text>{actionError}</s-text>
         </s-banner>
       )}
+      {filterError && (
+        <s-banner tone="critical">
+          <s-text>{filterError}</s-text>
+        </s-banner>
+      )}
+
+      <s-stack direction="inline" gap="base">
+        <s-select
+          label="Employee"
+          value={filterEmployee}
+          onChange={(event: CallbackEvent<"s-select">) => {
+            setPageState({ generated: false, changed: true });
+            setFilterEmployee(event.currentTarget.value);
+          }}
+        >
+          <s-option value="all">All Employees</s-option>
+          {employees.map((emp, idx) => (
+            <s-option key={idx} value={emp.id}>
+              {emp.firstName} {emp.lastName}
+            </s-option>
+          ))}
+        </s-select>
+
+        <s-date-field
+          label="Start Date"
+          value={filterStartDate}
+          onChange={(e: Event) => {
+            setPageState({ generated: false, changed: true });
+            setFilterStartDate((e.target as HTMLInputElement).value);
+          }}
+          allow={`--${today}`}
+        />
+
+        <s-date-field
+          label="End Date"
+          value={filterEndDate}
+          onChange={(e: Event) => {
+            setPageState({ generated: false, changed: true });
+            setFilterEndDate((e.target as HTMLInputElement).value);
+          }}
+          allow={`--${today}`}
+        />
+      </s-stack>
+
+      <s-button
+        variant="primary"
+        onClick={() => {
+          setPageState((state) => ({ ...state, generated: true }));
+          getLogs();
+        }}
+        loading={loading}
+      >
+        Generate Report
+      </s-button>
+
+      <s-button onClick={buildPDF}>PDF</s-button>
 
       {loading && <s-spinner />}
 
@@ -217,8 +421,11 @@ export default function TimeLogTab({
           >
             <s-table-header-row>
               <s-table-header listSlot="primary">Employee</s-table-header>
+              <s-table-header listSlot="primary">Location</s-table-header>
+              <s-table-header listSlot="labeled">Day</s-table-header>
               <s-table-header listSlot="labeled">Date</s-table-header>
               <s-table-header listSlot="labeled">Clock In</s-table-header>
+              <s-table-header listSlot="labeled">Day</s-table-header>
               <s-table-header listSlot="labeled">Date</s-table-header>
               <s-table-header listSlot="labeled">Clock Out</s-table-header>
               <s-table-header listSlot="labeled">Duration</s-table-header>
@@ -229,12 +436,14 @@ export default function TimeLogTab({
                 <s-table-row key={te.id}>
                   <s-table-cell>
                     <s-text type="strong">
-                      {employees.find((e) => e.id === te.employeeId)?.firstName}{" "}
-                      {employees.find((e) => e.id === te.employeeId)?.lastName}
+                      {te.firstName} {te.lastName}
                     </s-text>
                   </s-table-cell>
+                  <s-table-cell>{te.location}</s-table-cell>
+                  <s-table-cell>{formatDay(te.clockIn)}</s-table-cell>
                   <s-table-cell>{formatDate(te.clockIn)}</s-table-cell>
                   <s-table-cell>{formatTime(te.clockIn)}</s-table-cell>
+                  <s-table-cell>{formatDay(te.clockIn)}</s-table-cell>
                   <s-table-cell>{formatDate(te.clockOut)}</s-table-cell>
                   <s-table-cell>
                     {te.clockOut ? (

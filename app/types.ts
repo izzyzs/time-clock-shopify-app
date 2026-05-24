@@ -11,6 +11,9 @@ export interface Employee {
 export interface TimeEntry {
   id: string;
   employeeId: string;
+  location: string;
+  firstName: string;
+  lastName: string;
   clockIn: string;
   clockOut: string;
   notes: string;
@@ -30,6 +33,11 @@ export type CreateReportReturns =
 export type CreateReportArgs =
   Database["public"]["Functions"]["create_time_report"]["Args"];
 
+export type CreateTimeLogReportReturns =
+  Database["public"]["Functions"]["create_time_log_report"]["Returns"][number];
+export type CreateTimeLogReportArgs =
+  Database["public"]["Functions"]["create_time_log_report"]["Args"];
+
 export function returnRowToReport(r: CreateReportReturns): Report {
   return {
     employeeId: r.employee_id,
@@ -38,6 +46,31 @@ export function returnRowToReport(r: CreateReportReturns): Report {
     hours: r.hours,
     shifts: r.shifts,
     averageShift: r.avg_shift,
+  };
+}
+
+/**
+ * 
+ * 
+ * export interface TimeEntry {
+  id: string;
+  employeeId: string;
+  clockIn: string;
+  clockOut: string;
+  notes: string;
+}
+  
+*/
+export function returnRowToTimeEntry(r: CreateTimeLogReportReturns): TimeEntry {
+  return {
+    id: r.id.toString(),
+    employeeId: r.employee_id.toString(),
+    location: r.location,
+    firstName: r.first_name,
+    lastName: r.last_name,
+    clockIn: r.clock_in,
+    clockOut: r.clock_out,
+    notes: r.notes,
   };
 }
 
@@ -53,12 +86,17 @@ export const employeeRowToState = (r: EmployeeRow): Employee => {
   };
 };
 
-export type TimeEntryRow = Database["public"]["Tables"]["time_entries"]["Row"];
+// export type TimeEntryRow = Database["public"]["Tables"]["time_entries"]["Row"];
 
-export const timeEntryRowToState = (r: TimeEntryRow): TimeEntry => {
+export const timeEntryRowToState = (
+  r: CreateTimeLogReportReturns,
+): TimeEntry => {
   return {
     id: r.id.toString(),
+    location: r.location,
     employeeId: r.employee_id ? r.employee_id.toString() : "",
+    firstName: r.first_name,
+    lastName: r.last_name,
     clockIn: r.clock_in,
     clockOut: r.clock_out ?? "",
     notes: r.notes ?? "",

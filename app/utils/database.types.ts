@@ -44,6 +44,24 @@ export type Database = {
         }
         Relationships: []
       }
+      locations: {
+        Row: {
+          id: number
+          location: string
+          shop: string
+        }
+        Insert: {
+          id?: never
+          location: string
+          shop: string
+        }
+        Update: {
+          id?: never
+          location?: string
+          shop?: string
+        }
+        Relationships: []
+      }
       shopify_sessions: {
         Row: {
           accessToken: string | null
@@ -101,6 +119,7 @@ export type Database = {
           clock_out: string | null
           employee_id: number
           id: number
+          location: string
           notes: string | null
           shop: string
         }
@@ -109,6 +128,7 @@ export type Database = {
           clock_out?: string | null
           employee_id: number
           id?: never
+          location: string
           notes?: string | null
           shop: string
         }
@@ -117,6 +137,7 @@ export type Database = {
           clock_out?: string | null
           employee_id?: number
           id?: never
+          location?: string
           notes?: string | null
           shop?: string
         }
@@ -135,6 +156,24 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_time_log_report: {
+        Args: {
+          p_employee_id?: number
+          p_end_date?: string
+          p_shop: string
+          p_start_date?: string
+        }
+        Returns: {
+          clock_in: string
+          clock_out: string
+          employee_id: number
+          first_name: string
+          id: number
+          last_name: string
+          location: string
+          notes: string
+        }[]
+      }
       create_time_report: {
         Args: {
           p_employee_id?: number

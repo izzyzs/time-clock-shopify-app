@@ -17,6 +17,18 @@ export function formatDateTime(iso: string): string {
   });
 }
 
+export function formatDay(isoString: string): string {
+  const date = new Date(isoString);
+
+  if (isNaN(date.getTime())) {
+    throw new Error("Invalid ISO date string");
+  }
+
+  return date.toLocaleDateString("en-US", {
+    weekday: "long",
+  });
+}
+
 export function formatDate(iso: string): string {
   if (!iso) return "—";
   const d = new Date(iso);
@@ -52,6 +64,18 @@ export function formatDuration(clockIn: string, clockOut: string): string {
   const h = Math.floor(hours);
   const m = Math.round((hours - h) * 60);
   return `${h}h ${m}m`;
+}
+
+export function formatDurationInHours(
+  clockIn: string,
+  clockOut: string,
+): string {
+  if (!clockIn) return "—";
+  if (!clockOut) return "In Progress";
+
+  const hours = calcDurationHours(clockIn, clockOut);
+
+  return `${hours.toFixed(2)}`;
 }
 
 export function formatElapsed(clockIn: string): string {

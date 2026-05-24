@@ -34,10 +34,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     .from("employees")
     .select("*")
     .eq("shop", session.shop);
-  const { data: timeEntries } = await supabase
-    .from("time_entries")
-    .select("*")
-    .eq("shop", session.shop);
+  const { data: timeEntries } = await supabase.rpc("create_time_log_report", {
+    p_shop: session.shop,
+  });
 
   return {
     employees: employees?.map((e) => employeeRowToState(e)),

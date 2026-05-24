@@ -18,6 +18,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { session } = await authenticate.admin(request); // enforce Shopify auth if needed
 
+  console.log("clock in shop", session.shop);
+
   const { supabase } = createSupabaseClient();
 
   // Assume JSON payload from client
@@ -37,9 +39,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   const { data: locationData, error: locationError } = await supabase
     .from("locations")
-    .select("location")
+    .select("*")
     .eq("shop", session.shop)
     .single();
+
+  console.log("locationData", locationData);
 
   if (!locationData)
     return new Response(

@@ -108,4 +108,5 @@ export type Tab =
   | "dashboard"
   | "timelog"
   | "reports"
-  | "employees";
+  | "employees"
+  | "location";

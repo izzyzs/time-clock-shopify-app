@@ -25,6 +25,7 @@ import EmployeesTab from "../components/EmployeesTab";
 import DashboardTab from "app/components/DashboardTab";
 import TimeLogTab from "app/components/TimeLogTab";
 import ReportsTab from "app/components/ReportsTab";
+import LocationTab from "app/components/LocationTab";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   console.log(`running loader`);
@@ -233,6 +234,13 @@ export default function Index() {
           >
             Employees
           </s-clickable-chip>
+          <s-clickable-chip
+            color={activeTab === "location" ? "strong" : "subdued"}
+            onClick={() => setActiveTab("location")}
+            accessibilityLabel="Location tab"
+          >
+            Locations
+          </s-clickable-chip>
         </s-stack>
       </s-section>
       {activeTab === "clockinout" && (
@@ -274,6 +282,7 @@ export default function Index() {
           onRefresh={loadAllData}
         />
       )}
+      {activeTab === "location" && <LocationTab loading={dataLoading} />}
       {/* <s-section heading="Congrats on creating a new Shopify app 🎉">
         <s-paragraph>
           This embedded app template uses{" "}
